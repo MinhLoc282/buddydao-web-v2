@@ -6,13 +6,7 @@ import { abiBUSD, abiBDY } from './abi';
 import { tokensBDY } from '@/services/tokens';
 
 export function useApprove({ address, enabled = true }: { address?: `0x${string}`; enabled?: boolean }) {
-  let abi;
-
-  if (address === tokensBDY[0].address) {
-    abi = abiBDY;
-  } else {
-    abi = abiBUSD;
-  }
+  const abi = address === tokensBDY[0].address ? abiBDY : abiBUSD;
 
   const {
     state,
@@ -30,7 +24,7 @@ export function useApprove({ address, enabled = true }: { address?: `0x${string}
     address,
     abi,
     functionName: 'approve',
-    ...getPrepareContractWriteOptions({ args: writeArgs }),
+    ...(getPrepareContractWriteOptions({ args: writeArgs }) as any),
   });
 
   const contractWrite = useContractWrite(getContractWriteOptions(prepareContractWrite));
