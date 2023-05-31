@@ -37,7 +37,7 @@ export const ApproveModal: FC = () => {
     submit({
       args: [
         { name: 'spender', value: BuddyDaoAddress },
-        { name: 'amount', value: maxUint256 },
+        { name: 'value', value: maxUint256 },
       ],
     });
   }
