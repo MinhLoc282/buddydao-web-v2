@@ -33,4 +33,4 @@ export function useTokenPrice(numberOfTokens: BigNumber) {
   } else {
     return false;
   }
-};
+}

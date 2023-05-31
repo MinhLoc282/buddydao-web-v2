@@ -16,7 +16,7 @@ import { useCalculatingInterest } from '@/services/contracts/buddyDao/lenders/ca
 import { useApproveModalStore } from '@/components/approve/ApproveModal';
 import { useAllowance } from '@/services/contracts/token/allowance';
 import { tokensBDY } from '@/services/tokens';
-import { useTokenPrice } from '@/services/contracts/buddyDao/lenders/getTokenPrice'
+import { useTokenPrice } from '@/services/contracts/buddyDao/lenders/getTokenPrice';
 
 interface BorrowFormData {
   amount: string;
