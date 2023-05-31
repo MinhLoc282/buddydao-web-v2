@@ -2,7 +2,6 @@
 import { create } from 'zustand';
 
 export interface NewBorrowerFormData {
-  alias: string;
   token: `0x${string}`;
   address: `0x${string}`;
   fixedRate: string;

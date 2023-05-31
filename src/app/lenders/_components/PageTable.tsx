@@ -1,5 +1,4 @@
 'use client';
-import { AliasTableColumn } from '@/components/alias/AliasTableColumn';
 import { Token } from '@/components/contract/Token';
 import { TokenValue } from '@/components/contract/TokenValue';
 import { Button } from '@/components/ui/Button';
@@ -20,14 +19,6 @@ export function PageTable() {
   return (
     <Table
       columns={[
-        {
-          title: 'Alias',
-          key: 'alias',
-          align: 'left',
-          minWidth: '250px',
-          maxWidth: '400px',
-          render: (record) => <AliasTableColumn alias={record.Alias} address={record.Creditors} />,
-        },
         { title: 'Token', key: 'token', render: (record) => <Token address={record.Token} /> },
         {
           title: 'Credit amount',

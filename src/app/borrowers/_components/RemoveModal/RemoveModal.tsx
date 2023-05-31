@@ -114,7 +114,7 @@ export function RemoveModal() {
     >
       {borrower && (
         <div className={styles.content}>
-          <UserInfo alias={borrower.Alias} address={borrower.Address} />
+          <UserInfo address={borrower.Address} />
 
           <div>
             <TextField label="Interest Rate" disabled value={`${utils.formatUnits(borrower.FixedRate, 16)}%`} />
@@ -177,14 +177,13 @@ const styles = {
 };
 
 // ---------------- User info ----------------
-function UserInfo({ alias, address }: { alias: string; address: string }) {
+function UserInfo({ address }: { address: string }) {
   return (
     <div className={userInfoStyles.userInfo}>
       <div className={userInfoStyles.avatar}>
         <Avatar />
       </div>
       <div className={userInfoStyles.right}>
-        <div className={userInfoStyles.alias}>{alias}</div>
         <div className={userInfoStyles.address}>{addressTextOverflow(address)}</div>
       </div>
     </div>
@@ -194,7 +193,6 @@ const userInfoStyles = {
   userInfo: classNames('h-[60px]', 'flex', 'gap-[12px]'),
   avatar: classNames('min-w-fit'),
   right: classNames('flex', 'flex-col', 'justify-between', 'overflow-hidden'),
-  alias: classNames('text-[#333333]', 'font-bold', 'text-[30px]', 'leading-none'),
   address: classNames(
     'items-center',
     'rounded-full',

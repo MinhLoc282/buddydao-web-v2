@@ -15,6 +15,8 @@ import { useAccount, useToken } from 'wagmi';
 import { useCalculatingInterest } from '@/services/contracts/buddyDao/lenders/calculatingInterest';
 import { useApproveModalStore } from '@/components/approve/ApproveModal';
 import { useAllowance } from '@/services/contracts/token/allowance';
+import { tokensBDY } from '@/services/tokens';
+import { useTokenPrice } from '@/services/contracts/buddyDao/lenders/getTokenPrice'
 
 interface BorrowFormData {
   amount: string;
@@ -26,8 +28,10 @@ export function BorrowModal() {
 
   const { open: openApproveModal } = useApproveModalStore();
 
-  const { isLoading: isAllowanceLoading, data: allowance } = useAllowance({ address: lender?.Token, enabled: isOpen });
-  const isAllowance = Boolean(allowance?.gt(0));
+  const allowance = useAllowance({ address: lender?.Token, enabled: isOpen });
+
+  const isAllowanceBDY = Boolean(allowance.allowanceBDY?.data?.gt(0));
+  const isAllowanceBUSD = Boolean(allowance.allowanceBUSD?.data?.gt(0));
 
   const { control, handleSubmit, reset, watch } = useForm<BorrowFormData>({
     mode: 'onChange',
@@ -113,10 +117,20 @@ export function BorrowModal() {
     enabled: isOpen,
   });
 
+  const defaultValue = BigNumber.from('0');
+
+  const readTokenPrice = useTokenPrice(borrowValue || defaultValue);
+
   const formSubmit = handleSubmit(async () => {
-    if (!isAllowance) {
+    if (!isAllowanceBUSD) {
       if (!lender?.Token) throw new Error(`openApproveModal: lender.Token is not exist`);
       openApproveModal({ tokenAddress: lender.Token });
+      return;
+    }
+
+    if (!isAllowanceBDY && readTokenPrice) {
+      if (!lender?.Token) throw new Error(`openApproveModal: lender.Token is not exist`);
+      openApproveModal({ tokenAddress: tokensBDY[0].address });
       return;
     }
 
@@ -142,7 +156,7 @@ export function BorrowModal() {
     resetBorrow();
   }, [isOpen]);
 
-  const btnDisabled = Boolean(isAllowanceLoading || isLoading);
+  const btnDisabled = Boolean(allowance.allowanceBDY.isLoading || allowance.allowanceBUSD.isLoading || isLoading);
 
   return (
     <Modal

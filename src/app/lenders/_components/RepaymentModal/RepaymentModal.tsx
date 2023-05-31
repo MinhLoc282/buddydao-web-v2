@@ -19,8 +19,9 @@ export function RepaymentModal() {
 
   const { open: openApproveModal } = useApproveModalStore();
 
-  const { isLoading: isAllowanceLoading, data: allowance } = useAllowance({ address: lender?.Token, enabled: isOpen });
-  const isAllowance = Boolean(allowance?.gt(0));
+  const allowance = useAllowance({ address: lender?.Token, enabled: isOpen });
+
+  const isAllowanceBUSD = Boolean(allowance.allowanceBUSD?.data?.gt(0));
 
   const { data: token } = useToken({ address: lender?.Token });
 
@@ -61,7 +62,7 @@ export function RepaymentModal() {
   });
 
   function handleSubmit() {
-    if (!isAllowance) {
+    if (!isAllowanceBUSD) {
       if (!lender?.Token) throw new Error(`openApproveModal: lender.Token is not exist`);
       openApproveModal({ tokenAddress: lender.Token });
       return;
@@ -92,7 +93,7 @@ export function RepaymentModal() {
     }
   }, [isSuccess]);
 
-  const btnDisabled = Boolean(isAllowanceLoading || isLoading);
+  const btnDisabled = Boolean(allowance.allowanceBUSD.isLoading || isLoading);
 
   return (
     <>

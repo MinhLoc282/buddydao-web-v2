@@ -1,9 +1,11 @@
 import type { ReadContractResult } from '@wagmi/core';
 import { useAccount, useContractRead } from 'wagmi';
 import { BuddyDaoAddress } from '@/services/contracts/buddyDao/constants';
-import { abi } from './abi';
+import { abiBUSD, abiBDY } from './abi';
+import { tokensBDY } from '@/services/tokens';
 
-export type AllowanceResult = ReadContractResult<typeof abi, 'allowance'>;
+export type AllowanceResultBUSD = ReadContractResult<typeof abiBUSD, 'allowance'>;
+export type AllowanceResultBDY = ReadContractResult<typeof abiBDY, 'allowance'>;
 
 export function useAllowance({ address, enabled = true }: { address?: `0x${string}`; enabled?: boolean }) {
   const { address: accountAddress } = useAccount();
@@ -14,14 +16,26 @@ export function useAllowance({ address, enabled = true }: { address?: `0x${strin
   }
   const contractEnabled = Boolean(args);
 
-  const read = useContractRead({
+  const readBUSD = useContractRead({
     address,
-    abi,
+    abi: abiBUSD,
     functionName: 'allowance',
     args,
     watch: true,
     enabled: contractEnabled,
   });
 
-  return read;
+  const readBDY = useContractRead({
+    address: tokensBDY[0].address,
+    abi: abiBDY,
+    functionName: 'allowance',
+    args,
+    watch: true,
+    enabled: contractEnabled,
+  });
+
+  return {
+    allowanceBUSD: readBUSD,
+    allowanceBDY: readBDY,
+  };
 }

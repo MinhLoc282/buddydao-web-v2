@@ -8,6 +8,8 @@ import { useApproveModalStore } from './store';
 import { BuddyDaoAddress } from '@/services/contracts/buddyDao/constants';
 import { BigNumber } from 'ethers';
 
+import { tokensBDY } from '@/services/tokens';
+
 export const ApproveModal: FC = () => {
   const { isOpen, tokenAddress, close } = useApproveModalStore();
 
@@ -55,7 +57,9 @@ export const ApproveModal: FC = () => {
       }
       onClose={close}
     >
-      Approval is required the first time you use
+      {tokenAddress === tokensBDY[0].address
+        ? 'Approval for BDY is required the first time you use'
+        : 'Approval is required the first time you use'}
     </Modal>
   );
 };

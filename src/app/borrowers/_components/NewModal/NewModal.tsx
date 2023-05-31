@@ -65,23 +65,23 @@ export function NewModal() {
     }
   }, [isOpen]);
 
-  const { isLoading: isAllowanceLoading, data: allowance } = useAllowance({ address: tokenAddress, enabled: isOpen });
+  const allowance = useAllowance({ address: tokenAddress, enabled: isOpen });
 
-  const isAllowance = Boolean(allowance?.gt(0));
+  const isAllowanceBUSD = Boolean(allowance.allowanceBUSD?.data?.gt(0));
 
-  const btnDisabled = Boolean(isAllowanceLoading || isLoading);
+  const btnDisabled = Boolean(allowance.allowanceBUSD.isLoading || isLoading);
 
   const formSubmit = handleSubmit(async (data) => {
-    if (!isAllowance) {
+    if (!isAllowanceBUSD) {
       if (!tokenAddress) throw new Error(`NewModal: openApproveModal tokenAddress is not existt`);
       openApproveModal({ tokenAddress });
       return;
     }
+
     if (!tokenData?.decimals) throw new Error('Token decimals is not defined');
     submit({
       args: [
         { name: 'approveAddress', value: data.address as `0x${string}` },
-        { name: 'alias', value: data.alias as string },
         { name: 'token', value: data.token as `0x${string}` },
         { name: 'fixedRate', value: utils.parseUnits(data.fixedRate, 16) },
         { name: 'amount', value: utils.parseUnits(data.amount, tokenData.decimals) },
@@ -105,7 +105,7 @@ export function NewModal() {
               onClick={formSubmit}
             >
               Confirm
-              {isAllowanceLoading ? '(preparing)' : ''}
+              {allowance.allowanceBUSD.isLoading ? '(preparing)' : ''}
               {isLoading ? '(loading)' : ''}
             </Button>
             {error && <div className={styles.errorMsg}>{errorReason}</div>}
@@ -151,26 +151,6 @@ const NewForm = ({
             <TextField
               label="Address:"
               maxLength={42}
-              value={field.value}
-              error={fieldState.error?.message}
-              onChange={field.onChange}
-            />
-          );
-        }}
-      />
-
-      {/* Alias */}
-      <Controller<NewBorrowerFormData>
-        name="alias"
-        control={control}
-        rules={{
-          required: 'Alias is required',
-        }}
-        render={({ field, fieldState }) => {
-          return (
-            <TextField
-              label="Alias:"
-              maxLength={30}
               value={field.value}
               error={fieldState.error?.message}
               onChange={field.onChange}
@@ -279,7 +259,7 @@ const NewForm = ({
 
 const styles = {
   content: classNames('flex', 'flex-col'),
-  tokenSelect: classNames('w-[200px]'),
+  tokenSelect: classNames('w-[12.5rem]'),
 
   errorMsg: classNames('text-red-500', 'text-sm', 'mt-2'),
 };
