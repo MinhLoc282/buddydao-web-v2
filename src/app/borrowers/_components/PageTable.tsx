@@ -24,7 +24,7 @@ export function PageTable() {
           align: 'left',
           minWidth: '250px',
           maxWidth: '400px',
-          render: (record) => <AliasTableColumn alias={record.Alias} address={record.Address} />,
+          render: (record) => <AliasTableColumn alias="" address={record.Address} />,
         },
         {
           title: 'Token',
