@@ -10,7 +10,9 @@ const BuddyDaoAddressEnvKey = IsTestNet ? 'NEXT_PUBLIC_TESTNET_BUDDYDAO_ADDRESS'
 
 // Tokens
 const TokensEnv = IsTestNet ? process.env.NEXT_PUBLIC_TESTNET_TOKENS : process.env.NEXT_PUBLIC_TOKENS;
-const TokensBDYEnv = IsTestNet ? process.env.NEXT_PUBLIC_TESTNET_BUDDYDAO_TOKENS : process.env.NEXT_PUBLIC_BUDDYDAO_TOKENS;
+const TokensBDYEnv = IsTestNet
+  ? process.env.NEXT_PUBLIC_TESTNET_BUDDYDAO_TOKENS
+  : process.env.NEXT_PUBLIC_BUDDYDAO_TOKENS;
 const TokensEnvKey = IsTestNet ? 'NEXT_PUBLIC_TESTNET_TOKENS' : 'NEXT_PUBLIC_TOKENS';
 
 if (!isValidAddress(BuddyDaoAddressEnv)) {
