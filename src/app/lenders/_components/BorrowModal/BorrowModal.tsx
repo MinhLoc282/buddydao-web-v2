@@ -16,7 +16,6 @@ import { useCalculatingInterest } from '@/services/contracts/buddyDao/lenders/ca
 import { useApproveModalStore } from '@/components/approve/ApproveModal';
 import { useAllowance } from '@/services/contracts/token/allowance';
 import { tokensBDY } from '@/services/tokens';
-import { useTokenPrice } from '@/services/contracts/buddyDao/lenders/getTokenPrice';
 
 interface BorrowFormData {
   amount: string;
@@ -117,10 +116,6 @@ export function BorrowModal() {
     enabled: isOpen,
   });
 
-  const defaultValue = BigNumber.from('0');
-
-  const readTokenPrice = useTokenPrice(borrowValue || defaultValue);
-
   const formSubmit = handleSubmit(async () => {
     if (!isAllowanceBUSD) {
       if (!lender?.Token) throw new Error(`openApproveModal: lender.Token is not exist`);
@@ -128,7 +123,7 @@ export function BorrowModal() {
       return;
     }
 
-    if (!isAllowanceBDY && readTokenPrice) {
+    if (!isAllowanceBDY) {
       if (!lender?.Token) throw new Error(`openApproveModal: lender.Token is not exist`);
       openApproveModal({ tokenAddress: tokensBDY[0].address });
       return;
