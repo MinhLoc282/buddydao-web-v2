@@ -123,6 +123,8 @@ export function BorrowModal() {
   );
   const isAllowanceBUSD = Boolean(allowance.allowanceBUSD?.data?.gt(0));
 
+  console.log(isAllowanceBDY)
+
   const formSubmit = handleSubmit(async () => {
     if (!isAllowanceBUSD) {
       if (!lender?.Token) throw new Error(`openApproveModal: lender.Token is not exist`);
@@ -215,7 +217,7 @@ export function BorrowModal() {
           </div>
 
           <Detail>
-            <DetailItem label="Fee:" value={fee.uiValue} />
+            <DetailItem label="Fee (can be in BDY):" value={fee.uiValue} />
             <DetailItem label="Interest Rate:" value={fixedRateUI} />
             <DetailItem label="New Balance Owed:" value={newBalanceOwedUI} />
           </Detail>
