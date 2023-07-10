@@ -45,6 +45,8 @@ export function BorrowModal() {
 
   const { data: token } = useToken({ address: lender?.Token });
 
+  const { data: BDYtoken } = useToken({ address: tokensBDY[0].address });
+
   // avaliable credit
   const avaliableCreditUI = useTokenValue({ address: lender?.Token, value: lender?.CreditLine, isShowSymbol: true });
 
@@ -83,14 +85,6 @@ export function BorrowModal() {
     borrowValue = parseBorrowAmount(borrowAmount);
   } catch (error) {}
 
-  // fee
-  const fee = useFee({
-    lenderAddress,
-    borrowerIndex: lender ? BigNumber.from(lender.borrowerIndex) : undefined,
-    borrowAmount: borrowValue,
-    token,
-  });
-
   // fixedRate
   const fixedRateUI = lender ? `${utils.formatUnits(lender.FixedRate, 16)}%` : '-';
 
@@ -122,6 +116,14 @@ export function BorrowModal() {
     allowance.allowanceBDY?.data?.gt(0) && allowance.allowanceBDY?.data?.gte(readTokenPrice || defaultValue),
   );
   const isAllowanceBUSD = Boolean(allowance.allowanceBUSD?.data?.gt(0));
+
+  // fee
+  const fee = useFee({
+    lenderAddress,
+    borrowerIndex: lender ? BigNumber.from(lender.borrowerIndex) : undefined,
+    borrowAmount: isAllowanceBDY ? readTokenPrice : borrowValue,
+    token: isAllowanceBDY ? BDYtoken : token,
+  });
 
   const formSubmit = handleSubmit(async () => {
     if (!isAllowanceBUSD) {
@@ -249,7 +251,16 @@ function useFee({
       : undefined;
 
   const { data } = useCalculatingInterest({ enabled: !!args, args });
-  const interestValue = token && data && utils.formatUnits(data, token.decimals);
+
+  let interestValue: string | undefined;
+  if (data) {
+    const defaultValue = BigNumber.from('0');
+    const feePercentage = 0.025;
+    const feeAmount = borrowAmount
+      ?.mul(BigNumber.from(utils.parseUnits(feePercentage.toString(), 18)))
+      .div(BigNumber.from(10).pow(18));
+    interestValue = utils.formatUnits(feeAmount || defaultValue, token?.decimals);
+  }
 
   const uiInterest = !args ? '-' : interestValue ? `${interestValue} ${token?.symbol}` : 'loading';
 
