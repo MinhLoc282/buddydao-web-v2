@@ -194,10 +194,6 @@ const NewForm = ({
                   // greater than 0
                   return 'Fixed Rate must be greater than 0';
                 }
-
-                if (maxFixedRate && parsedValue.gt(maxFixedRate)) {
-                  return `Fixed Rate must be less than ${utils.formatUnits(maxFixedRate, 16)}`;
-                }
               } catch (error) {
                 return 'Invalid Fixed Rate';
               }

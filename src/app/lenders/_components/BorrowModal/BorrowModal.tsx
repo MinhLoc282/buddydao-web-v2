@@ -16,6 +16,7 @@ import { useCalculatingInterest } from '@/services/contracts/buddyDao/lenders/ca
 import { useApproveModalStore } from '@/components/approve/ApproveModal';
 import { useAllowance } from '@/services/contracts/token/allowance';
 import { tokensBDY } from '@/services/tokens';
+import { useTokenPrice } from '@/services/contracts/buddyDao/lenders/getTokenPrice';
 
 interface BorrowFormData {
   amount: string;
@@ -28,9 +29,6 @@ export function BorrowModal() {
   const { open: openApproveModal } = useApproveModalStore();
 
   const allowance = useAllowance({ address: lender?.Token, enabled: isOpen });
-
-  const isAllowanceBDY = Boolean(allowance.allowanceBDY?.data?.gt(0));
-  const isAllowanceBUSD = Boolean(allowance.allowanceBUSD?.data?.gt(0));
 
   const { control, handleSubmit, reset, watch } = useForm<BorrowFormData>({
     mode: 'onChange',
@@ -115,6 +113,15 @@ export function BorrowModal() {
   } = useBorrow({
     enabled: isOpen,
   });
+
+  const defaultValue = BigNumber.from('0');
+
+  const readTokenPrice = useTokenPrice(borrowValue || defaultValue);
+
+  const isAllowanceBDY = Boolean(
+    allowance.allowanceBDY?.data?.gt(0) && allowance.allowanceBDY?.data?.gte(readTokenPrice || defaultValue),
+  );
+  const isAllowanceBUSD = Boolean(allowance.allowanceBUSD?.data?.gt(0));
 
   const formSubmit = handleSubmit(async () => {
     if (!isAllowanceBUSD) {
