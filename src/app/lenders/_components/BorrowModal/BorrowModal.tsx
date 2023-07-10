@@ -123,8 +123,6 @@ export function BorrowModal() {
   );
   const isAllowanceBUSD = Boolean(allowance.allowanceBUSD?.data?.gt(0));
 
-  console.log(isAllowanceBDY)
-
   const formSubmit = handleSubmit(async () => {
     if (!isAllowanceBUSD) {
       if (!lender?.Token) throw new Error(`openApproveModal: lender.Token is not exist`);
