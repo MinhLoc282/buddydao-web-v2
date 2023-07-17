@@ -125,7 +125,6 @@ export function NewModal() {
 
 const NewForm = ({
   control,
-  maxFixedRate,
   tokenData,
 }: {
   control: Control<NewBorrowerFormData, any>;
